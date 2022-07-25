@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/todo.dart';
+import '../../models/to_do.dart';
 
 class TodoTile extends StatelessWidget {
   const TodoTile({
@@ -31,11 +31,11 @@ class TodoTile extends StatelessWidget {
             onChanged: onChanged,
           ),
           Text(
-            todo.title,
+            todo.title!,
             style: TextStyle(
               fontSize: 16,
-              color: todo.isDone ? Colors.green : Colors.red,
-              decoration: todo.isDone
+              color: todo.isDone! ? Colors.green : Colors.red,
+              decoration: todo.isDone!
                   ? TextDecoration.lineThrough
                   : TextDecoration.none,
             ),

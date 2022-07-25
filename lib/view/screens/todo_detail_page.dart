@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/models/todo.dart';
+
+import '../../models/to_do.dart';
 
 class TodoDetailPage extends StatelessWidget {
   const TodoDetailPage({Key? key, required this.todo}) : super(key: key);
@@ -18,7 +19,7 @@ class TodoDetailPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Text(todo.title),
+          Text(todo.title!),
           //TODO:1 add checkbox
         ],
       ),

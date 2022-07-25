@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/view/screens/todo_detail_page.dart';
 
-import '../../models/todo.dart';
+import '../../models/to_do.dart';
+
 import '../widgets/todo_tile_widget.dart';
 
 class TodoList extends StatefulWidget {
@@ -12,11 +14,18 @@ class TodoList extends StatefulWidget {
 }
 
 class _TodoListState extends State<TodoList> {
-  List<ToDo> todoList = [
-    ToDo(title: 'todo1', isDone: true),
-    ToDo(title: 'todo2'),
-  ];
+  //TODO: remove this list
+  List<ToDo> todoList = [];
   final controller = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //TODO fetch data from shared preferences check if data null
+    //TODO convert strong to JSon and Data  Class
+    //TODO set data to todoList
+  }
 
   @override
   void dispose() {
@@ -42,16 +51,12 @@ class _TodoListState extends State<TodoList> {
             onTap: () {
               Navigator.of(context)
                   .push(
-                MaterialPageRoute(
-                  builder: (context) => TodoDetailPage(todo: todoList[index]),
-                ),
-              )
-                  .then((value) {
-                //toggle method
-                // todoList[index].isDone = !todoList[index].isDone;
-                //TODO: set data to isDone from value
-                setState(() {});
-              });
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          TodoDetailPage(todo: todoList[index]),
+                    ),
+                  )
+                  .then((value) {});
             },
             child: TodoTile(
               todo: todoList[index],
@@ -81,8 +86,12 @@ class _TodoListState extends State<TodoList> {
       setState(() {});
       await Future.delayed(Duration(seconds: 2));
       loading = false;
-
-      todoList.add(ToDo(title: controller.text));
+      final prefs = await SharedPreferences.getInstance();
+      ToDo todo = ToDo(title: controller.text, isDone: false);
+      // todo saved to local db
+      prefs.setString('todo', todo.toJson().toString());
+//TODO: remove method
+      todoList.add(todo);
       controller.clear();
       setState(() {});
     } else {
