@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/view/screens/todo_detail_page.dart';
@@ -8,23 +10,29 @@ import '../widgets/todo_tile_widget.dart';
 
 class TodoList extends StatefulWidget {
   const TodoList({Key? key}) : super(key: key);
-
+  static const routeName = "home";
   @override
   State<TodoList> createState() => _TodoListState();
 }
 
 class _TodoListState extends State<TodoList> {
-  //TODO: remove this list
   List<ToDo> todoList = [];
   final controller = TextEditingController();
-
+  final String todoKey = 'todos';
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    //TODO fetch data from shared preferences check if data null
-    //TODO convert strong to JSon and Data  Class
-    //TODO set data to todoList
+    getTodosFromShared();
+  }
+
+  getTodosFromShared() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? todos = prefs.getString(todoKey);
+    if (todos != null) {
+      todoList =
+          jsonDecode(todos).map<ToDo>((el) => ToDo.fromJson(el)).toList();
+    }
+    setState(() {});
   }
 
   @override
@@ -50,18 +58,18 @@ class _TodoListState extends State<TodoList> {
           (index) => InkWell(
             onTap: () {
               Navigator.of(context)
-                  .push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          TodoDetailPage(todo: todoList[index]),
-                    ),
+                  .pushNamed(
+                    TodoDetailPage.routeName,
+                    arguments: todoList[index],
                   )
                   .then((value) {});
             },
             child: TodoTile(
               todo: todoList[index],
-              onDelete: () {
+              onDelete: () async {
                 todoList.removeAt(index);
+                final prefs = await SharedPreferences.getInstance();
+                prefs.setString(todoKey, jsonEncode(todoList));
                 setState(() {});
               },
               onChanged: (value) {
@@ -88,10 +96,9 @@ class _TodoListState extends State<TodoList> {
       loading = false;
       final prefs = await SharedPreferences.getInstance();
       ToDo todo = ToDo(title: controller.text, isDone: false);
-      // todo saved to local db
-      prefs.setString('todo', todo.toJson().toString());
-//TODO: remove method
       todoList.add(todo);
+
+      prefs.setString(todoKey, jsonEncode(todoList));
       controller.clear();
       setState(() {});
     } else {

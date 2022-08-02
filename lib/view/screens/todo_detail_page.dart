@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import '../../models/to_do.dart';
 
 class TodoDetailPage extends StatelessWidget {
-  const TodoDetailPage({Key? key, required this.todo}) : super(key: key);
-  final ToDo todo;
+  const TodoDetailPage({Key? key}) : super(key: key);
+  static const routeName = "detail";
   @override
   Widget build(BuildContext context) {
+    final todo = ModalRoute.of(context)!.settings.arguments as ToDo;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            // send  data from checkbox to previouse page
             Navigator.of(context).pop();
           },
           icon: Icon(Icons.arrow_back),
@@ -20,7 +20,6 @@ class TodoDetailPage extends StatelessWidget {
       body: Column(
         children: [
           Text(todo.title!),
-          //TODO:1 add checkbox
         ],
       ),
     );

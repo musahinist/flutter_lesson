@@ -18,7 +18,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: const TodoList(),
+      initialRoute: TodoList.routeName,
+      routes: {
+        TodoList.routeName: (context) => const TodoList(),
+        TodoDetailPage.routeName: (context) => const TodoDetailPage()
+      },
     );
   }
 }
